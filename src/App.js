@@ -1,44 +1,24 @@
-// src/App.js
 import React, { useState } from 'react';
 import QuestionScreen from './components/QuestionScreen';
+import LoginScreen from './components/LoginScreen';
 
-const App = () => {
-  const [user, setUser] = useState(null);
-  const [hasAccess, setHasAccess] = useState(false);
-  const [email, setEmail] = useState('');
+function App() {
+  const [user, setUser] = useState(localStorage.getItem('tournamentUser') || '');
 
   const handleLogin = (email) => {
-    if (email.includes('@')) {
-      setUser(email);
-      setHasAccess(true);
-    }
+    localStorage.setItem('tournamentUser', email);
+    setUser(email);
   };
 
-  if (!hasAccess) {
-    return (
-      <div style={{ padding: '2rem', maxWidth: '400px', margin: 'auto' }}>
-        <h1>Enter Tournament</h1>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-        />
-        <button
-          onClick={() => handleLogin(email)}
-          style={{ padding: '0.5rem 1rem', backgroundColor: '#007bff', color: '#fff', border: 'none', cursor: 'pointer' }}
-        >
-          Enter Tournament
-        </button>
-        <p style={{ fontSize: '0.875rem', color: '#666', marginTop: '0.5rem' }}>
-          (Temporary login, no password needed)
-        </p>
-      </div>
-    );
-  }
-
-  return <QuestionScreen user={user} />;
-};
+  return (
+    <div>
+      {!user ? (
+        <LoginScreen onLogin={handleLogin} />
+      ) : (
+        <QuestionScreen user={user} />
+      )}
+    </div>
+  );
+}
 
 export default App;
