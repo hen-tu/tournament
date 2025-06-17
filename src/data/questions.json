@@ -1,0 +1,108 @@
+{
+  "level1": [
+    {
+      "text": "Approximately how many shuls existed in the Old City before the 1948 War?",
+      "options": ["50", "70", "100", "150"],
+      "correct": "70"
+    },
+    {
+      "text": "Which of the following is the shortest Sefer in Tanach?",
+      "options": ["Ovadia", "Chavakuk", "Yona", "Hoshea"],
+      "correct": "Ovadia"
+    },
+    {
+      "text": "According to surveys, which of the following is most commonly eaten on Shabos by frum households worldwide?",
+      "options": ["Kugel", "Gefilte Fish", "Kishke", "Cholent"],
+      "correct": "Cholent"
+    },
+    {
+      "text": "What’s the approximate frum school-aged population in Lakewood today?",
+      "options": ["5,000", "10,000", "20,000", "30,000+"],
+      "correct": "30,000+"
+    },
+    {
+      "text": "What does the FIG in FIG Phone stand for?",
+      "options": ["Fully Integrated Gadget", "Filtered Internet Gateway", "Frum Internet Guard", "Filtered Information Grid"],
+      "correct": "Frum Internet Guard"
+    },
+    {
+      "text": "In a 2020 Survey, what was the average size of a frum family’s grocery bill for a typical Shabbos?",
+      "options": ["$25–50", "$75–100", "$150–250", "Over $300"],
+      "correct": "$150–250"
+    },
+    {
+      "text": "The name ‘Yerushalayim’ is first mentioned in which sefer of Tanach?",
+      "options": ["Bereishis", "Yehoshua", "Shmuel", "Melachim"],
+      "correct": "Yehoshua"
+    },
+    {
+      "text": "The eiruv in Yerushalayim covers approximately",
+      "options": ["10 kilometers", "30 kilometers", "60 kilometers", "100 kilometers"],
+      "correct": "60 kilometers"
+    },
+    {
+      "text": "Approximately what percentage of Yerushalayim’s population identifies as chareidi?",
+      "options": ["25%", "40%", "60%", "75%"],
+      "correct": "40%"
+    },
+    {
+      "text": "The Siyum Hashas 13th Cycle was completed in which year?",
+      "options": ["2020", "2022", "2023", "2024"],
+      "correct": "2020"
+    }
+  ],
+  "level2": [
+    {
+      "text": "Which tractate contains the laws of Shabbat?",
+      "options": ["Berachos", "Shabbos", "Eruvin", "Beitzah"],
+      "correct": "Shabbos"
+    },
+    {
+      "text": "How many parshiyos are in a standard tefillin shel yad?",
+      "options": ["1", "2", "4", "5"],
+      "correct": "1"
+    },
+    {
+      "text": "What is the name of the pre-Shabbos donation given to the poor?",
+      "options": ["Ma'aser", "Kupat Tzedakah", "Matanos L'evyonim", "Maos Chittim"],
+      "correct": "Maos Chittim"
+    },
+    {
+      "text": "In which month is Purim celebrated?",
+      "options": ["Teves", "Adar", "Shevat", "Nisan"],
+      "correct": "Adar"
+    },
+    {
+      "text": "What term is used for the meal before the Yom Kippur fast?",
+      "options": ["Seudah Mafseket", "Melaveh Malkah", "Seudas Purim", "Kiddush"],
+      "correct": "Seudah Mafseket"
+    }
+  ],
+  "level3": [
+    {
+      "text": "What was the original location of the Mishkan after Egypt?",
+      "options": ["Yericho", "Gilgal", "Shilo", "Be'er Sheva"],
+      "correct": "Gilgal"
+    },
+    {
+      "text": "How many strings are on each corner of a kosher tallis?",
+      "options": ["4", "6", "8", "10"],
+      "correct": "8"
+    },
+    {
+      "text": "What is the Hebrew date for Rosh Hashanah?",
+      "options": ["10 Tishrei", "1 Tishrei", "15 Tishrei", "25 Elul"],
+      "correct": "1 Tishrei"
+    },
+    {
+      "text": "Which king built the First Beis Hamikdash?",
+      "options": ["Shaul", "David", "Shlomo", "Chizkiyahu"],
+      "correct": "Shlomo"
+    },
+    {
+      "text": "How many questions are asked in the Mah Nishtanah?",
+      "options": ["2", "3", "4", "5"],
+      "correct": "4"
+    }
+  ]
+}
