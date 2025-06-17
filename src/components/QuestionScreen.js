@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import allQuestions from '../data/questions.json';
 import LevelComplete from './LevelComplete';
+import TryAgain from './TryAgain';
 import TournamentComplete from './TournamentComplete';
-import TryAgainScreen from './TryAgainScreen';
 
 const getRandomQuestions = (questions, count) => {
   const shuffled = [...questions].sort(() => 0.5 - Math.random());
@@ -11,10 +11,12 @@ const getRandomQuestions = (questions, count) => {
 };
 
 const QuestionScreen = ({ user }) => {
-  const [level, setLevel] = useState(() => parseInt(localStorage.getItem('level')) || 1);
-  const [correctAcrossLevels, setCorrectAcrossLevels] = useState(() => parseInt(localStorage.getItem('correctAcrossLevels')) || 0);
-  const [totalTickets, setTotalTickets] = useState(() => parseInt(localStorage.getItem('totalTickets')) || 0);
-  const [quizQuestions, setQuizQuestions] = useState(() => getRandomQuestions(allQuestions[`level${level}`], 5));
+  const [level, setLevel] = useState(1);
+  const [correctAcrossLevels, setCorrectAcrossLevels] = useState(0);
+  const [totalTickets, setTotalTickets] = useState(0);
+
+  const levelKey = `level${level}`;
+  const [quizQuestions, setQuizQuestions] = useState(getRandomQuestions(allQuestions[levelKey], 5));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
   const [selected, setSelected] = useState(null);
@@ -22,9 +24,8 @@ const QuestionScreen = ({ user }) => {
   const [correctCount, setCorrectCount] = useState(0);
   const [tickets, setTickets] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const [tournamentDone, setTournamentDone] = useState(false);
-  const [tryAgain, setTryAgain] = useState(false);
   const [timeTaken, setTimeTaken] = useState(0);
+  const [disqualified, setDisqualified] = useState(false);
 
   const currentQuestion = quizQuestions[currentIndex];
 
@@ -38,30 +39,25 @@ const QuestionScreen = ({ user }) => {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && selected === null) {
-      handleAnswer('__timeout__');
+      handleAnswer(null);
     }
   }, [timeLeft, selected]);
-
-  const saveProgress = (level, correct, tickets) => {
-    localStorage.setItem('level', level);
-    localStorage.setItem('correctAcrossLevels', correct);
-    localStorage.setItem('totalTickets', tickets);
-  };
 
   const handleAnswer = (choice) => {
     if (selected !== null) return;
 
     setSelected(choice);
-    const isCorrect = choice && choice === currentQuestion.correct;
+    const isCorrect = choice === currentQuestion.correct;
     setFeedback(
-      isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${currentQuestion.correct}`
+      isCorrect
+        ? '✅ Correct!'
+        : `❌ Incorrect. Correct answer: ${currentQuestion.correct}`
     );
     if (isCorrect) {
       const newCorrectCount = correctCount + 1;
-      const updatedTotalCorrect = correctAcrossLevels + 1;
-      const newCorrectAcrossLevels = updatedTotalCorrect;
       setCorrectCount(newCorrectCount);
-      setCorrectAcrossLevels(newCorrectAcrossLevels);
+      const updatedTotalCorrect = correctAcrossLevels + 1;
+      setCorrectAcrossLevels(updatedTotalCorrect);
 
       let ticketBonus = 0;
       if (newCorrectCount % 8 === 0) {
@@ -69,13 +65,7 @@ const QuestionScreen = ({ user }) => {
         if (level === 2) ticketBonus = 5;
         if (level === 3) ticketBonus = 10;
         setTickets(tickets + ticketBonus);
-        setTotalTickets(prev => {
-          const total = prev + ticketBonus;
-          saveProgress(level, newCorrectAcrossLevels, total);
-          return total;
-        });
-      } else {
-        saveProgress(level, newCorrectAcrossLevels, totalTickets);
+        setTotalTickets(totalTickets + ticketBonus);
       }
     }
   };
@@ -87,46 +77,26 @@ const QuestionScreen = ({ user }) => {
       setSelected(null);
       setFeedback('');
     } else {
-      if (correctCount >= 2 || level === 3) {
-        setShowResults(true);
+      if (correctCount < 2 && level < 3) {
+        setDisqualified(true);
       } else {
-        setTryAgain(true);
+        setShowResults(true);
       }
     }
   };
 
-  const handleRestart = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
-
-  const retryLevel = () => {
-    setQuizQuestions(getRandomQuestions(allQuestions[`level${level}`], 5));
-    setCurrentIndex(0);
-    setCorrectCount(0);
-    setTickets(0);
-    setTryAgain(false);
-    setTimeLeft(10);
-    setSelected(null);
-    setFeedback('');
-  };
-
-  if (tournamentDone) {
-    return <TournamentComplete totalTickets={totalTickets} onRestart={handleRestart} />;
-  }
-
-  if (tryAgain) {
-    return <TryAgainScreen onRetry={retryLevel} />;
+  if (disqualified) {
+    return <TryAgain />;
   }
 
   if (showResults) {
     return (
-      <LevelComplete
-        score={correctCount}
-        tickets={tickets}
-        timeTaken={timeTaken}
-        onNextLevel={() => {
-          if (level < 3) {
+      level < 3 ? (
+        <LevelComplete
+          score={correctCount}
+          tickets={tickets}
+          timeTaken={timeTaken}
+          onNextLevel={() => {
             const nextLevel = level + 1;
             setLevel(nextLevel);
             setQuizQuestions(getRandomQuestions(allQuestions[`level${nextLevel}`], 5));
@@ -137,53 +107,61 @@ const QuestionScreen = ({ user }) => {
             setTimeLeft(10);
             setSelected(null);
             setFeedback('');
-            saveProgress(nextLevel, correctAcrossLevels, totalTickets);
-          } else {
-            setTournamentDone(true);
-          }
-        }}
-      />
+          }}
+        />
+      ) : (
+        <TournamentComplete totalTickets={totalTickets} />
+      )
     );
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: 'auto' }}>
-      <h2>Welcome, {user}</h2>
-      <h3>Level {level}</h3>
-      <h3>Total Tickets: {totalTickets}</h3>
-      <p>Time left: {timeLeft}s</p>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card shadow p-4 w-100" style={{ maxWidth: '600px' }}>
+        <h5 className="text-muted mb-2">Welcome, {user}</h5>
+        <h3 className="mb-3">Level {level}</h3>
+        <p>Total Tickets: 🎟️ {totalTickets}</p>
 
-      <h3>{currentQuestion.text}</h3>
+        {/* Progress Bar */}
+        <div className="progress mb-3" style={{ height: '20px' }}>
+          <div
+            className="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar"
+            style={{
+              width: `${((currentIndex + 1) / quizQuestions.length) * 100}%`
+            }}
+            aria-valuenow={currentIndex + 1}
+            aria-valuemin="0"
+            aria-valuemax={quizQuestions.length}
+          >
+            {currentIndex + 1} / {quizQuestions.length}
+          </div>
+        </div>
 
-      {currentQuestion.options.map((option) => (
-        <button
-          key={option}
-          onClick={() => handleAnswer(option)}
-          disabled={!!selected}
-          style={{
-            display: 'block',
-            margin: '0.5rem 0',
-            padding: '0.5rem 1rem',
-            backgroundColor: selected === option ? '#ddd' : '#eee',
-            cursor: 'pointer',
-            width: '100%',
-            textAlign: 'left'
-          }}
-        >
-          {option}
-        </button>
-      ))}
+        <p className="mb-2">⏱️ Time left: {timeLeft}s</p>
+        <h5 className="mb-3">{currentQuestion.text}</h5>
 
-      {feedback && <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{feedback}</p>}
+        {currentQuestion.options.map((option) => (
+          <button
+            key={option}
+            onClick={() => handleAnswer(option)}
+            disabled={!!selected}
+            className={`btn btn-outline-dark mb-2 w-100 text-start ${
+              selected === option ? 'active' : ''
+            }`}
+          >
+            {option}
+          </button>
+        ))}
 
-      {selected && (
-        <button
-          onClick={handleNext}
-          style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
-        >
-          Next
-        </button>
-      )}
+        {feedback && <p className="fw-bold mt-3">{feedback}</p>}
+
+        {selected && (
+          <button className="btn btn-primary mt-3" onClick={handleNext}>
+            Next →
+          </button>
+        )}
+      </div>
     </div>
   );
 };

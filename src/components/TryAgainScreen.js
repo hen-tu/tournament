@@ -1,20 +1,23 @@
-// src/components/TryAgainScreen.js
 import React from 'react';
 
-const TryAgainScreen = ({ onRetry }) => {
+const TryAgain = () => {
+  const handleReplay = () => {
+    window.location.href = 'https://yourdomain.com/product/tournament-ticket/';
+  };
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: 'auto', textAlign: 'center' }}>
-      <h2>😕 Try Again</h2>
-      <p>You didn't answer enough questions correctly to unlock the next level.</p>
-      <p>Try again to improve your score and move forward!</p>
-      <button
-        onClick={onRetry}
-        style={{ marginTop: '1rem', padding: '0.5rem 1.5rem', fontSize: '1rem' }}
-      >
-        Try Again
-      </button>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card shadow p-4 text-center" style={{ maxWidth: '500px', width: '100%' }}>
+        <h2 className="text-danger mb-3">😞 Try Again</h2>
+        <p className="fs-5 mb-4">You didn’t get enough correct answers to unlock the next level.</p>
+        <p className="mb-4">Want to try again? Purchase another entry to rejoin the tournament!</p>
+
+        <button className="btn btn-primary w-100" onClick={handleReplay}>
+          🔁 Try Again (Buy Ticket)
+        </button>
+      </div>
     </div>
   );
 };
 
-export default TryAgainScreen;
+export default TryAgain;
